@@ -43,15 +43,12 @@ class Table(PlanarSpace):
 
     def __str__(self: Table) -> str:
         return "\n".join(
-            [
-                "".join(str(i) if i is not None else " " for i in row)
-                for row in self.matrix
-            ],
+            "".join(str(i) if i is not None else " " for i in row)
+            for row in self.matrix
         )
 
 
 def run(filename: Path) -> None:
-    random.seed(0)
     table = Table(count=COUNT, size=(COUNT, COUNT))
     with filename.open() as f:
         table.load(f.read())

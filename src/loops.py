@@ -114,10 +114,8 @@ class Scene(PlanarSpace):
 
     def __str__(self: Scene) -> str:
         return "\n".join(
-            [
-                "".join(str(i) if i is not None else " " for i in row)
-                for row in self.matrix
-            ],
+            "".join(str(i) if i is not None else " " for i in row)
+            for row in self.matrix
         )
 
 
