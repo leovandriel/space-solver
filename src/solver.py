@@ -71,7 +71,8 @@ def solve_index(
 
     Returns True if the space is solved, False otherwise.
     """
-    states = space.get(index).states
+    states = list(space.get(index).states)
+    random.shuffle(states)
     for state in states:
         copy = space.copy()
         copy.solve(index, state)
