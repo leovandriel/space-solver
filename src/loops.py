@@ -12,7 +12,7 @@ from src.utils import await_key, flush_surface, setup_surface
 
 GRID_SIZE = 25
 STATE_COUNT = 4
-FRAME_DELAY = 0.01
+FRAME_DELAY = 0.1
 DRAW_SIZE = (1000, 1000)
 DRAW_SCALE = 2
 FILL_COLOR = (255, 255, 255)

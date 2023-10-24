@@ -19,7 +19,7 @@ DRAW_SIZE = (500, 500)
 FILL_COLOR = (255, 255, 255)
 LINE_COLOR = (0, 0, 0)
 TEXT_COLOR = (0, 0, 0)
-FRAME_DELAY = 0.001
+FRAME_DELAY = 0.1
 
 
 class Table(PlanarSpace):
