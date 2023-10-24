@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Iterable, Iterator, Protocol
+from typing import Iterable, Iterator, Protocol, cast
 
 
 class PositionState(Protocol):
@@ -73,19 +73,19 @@ class DiscretePosition(Position):
         """True if can only be in one state."""
         return self.vector.count(True) == 1
 
-    def has(self: DiscretePosition, state: int) -> bool:  # type: ignore[override]
+    def has(self: DiscretePosition, state: PositionState) -> bool:
         """Return true if can be in the given state."""
-        return self.vector[state]
+        return self.vector[cast(int, state)]
 
-    def remove(self: DiscretePosition, states: Iterable[int]) -> None:  # type: ignore[override]
+    def remove(self: DiscretePosition, states: Iterable[PositionState]) -> None:
         """Remove the given states from the position."""
-        for state in states:
+        for state in cast(Iterable[int], states):
             self.vector[state] = False
 
-    def solve(self: DiscretePosition, state: int) -> None:  # type: ignore[override]
+    def solve(self: DiscretePosition, state: PositionState) -> None:
         """Remove all but one state from the position."""
         for i, s in enumerate(self.vector):
-            self.vector[i] = s and i == state
+            self.vector[i] = s and i == cast(int, state)
 
     @property
     def state(self: DiscretePosition) -> int:

@@ -33,7 +33,7 @@ def ensure_edge(space: Space) -> None:
     """
     if not space.edge:
         indices = [index for index, _ in space.positions]
-        space.edge.add(random.choice(indices))  # noqa: S311
+        space.edge.add(random.choice(indices))
 
 
 def select_position(space: Space) -> SpaceIndex:
@@ -54,7 +54,7 @@ def select_position(space: Space) -> SpaceIndex:
             else:
                 minimum = count
                 indices = [index]
-    return random.choice(indices) if indices else NOT_FOUND  # noqa: S311
+    return random.choice(indices) if indices else NOT_FOUND
 
 
 def solve_index(
@@ -75,13 +75,13 @@ def solve_index(
     for state in states:
         copy = space.copy()
         copy.solve(index, state)
-        if solve(copy, callback):
+        if solve_space(copy, callback):
             space.assign(copy)
             return True
     return False
 
 
-def solve(space: Space, callback: Callback | None = None) -> bool:
+def solve_space(space: Space, callback: Callback | None = None) -> bool:
     """Solve all positions in the space recursively.
 
     First propagate all solved positions listed in the queue. Then find the

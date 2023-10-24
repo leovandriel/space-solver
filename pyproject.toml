@@ -3,7 +3,7 @@
 [tool.ruff]
 select = ["ALL"]
 extend-exclude = ["tests"]
-ignore = ["D203", "D213"]
+ignore = ["D203", "D213", "S311"]
 
 [tool.mypy]
 strict = true

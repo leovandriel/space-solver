@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Iterable, Iterator, Protocol
+from typing import Iterable, Iterator, Protocol, cast
 
 from src.position import DiscretePosition, Position, PositionState
 
@@ -85,10 +85,10 @@ class PlanarSpace(Space):
     def __init__(  # noqa: PLR0913
         self: PlanarSpace,
         matrix: list[list[DiscretePosition]] | None = None,
-        count: int = 0,
-        size: tuple[int, int] = (0, 0),
         queue: list[SpaceIndex] | None = None,
         edge: set[SpaceIndex] | None = None,
+        count: int = 0,
+        size: tuple[int, int] = (0, 0),
     ) -> None:
         """Create a space with the given matrix or size."""
         self.matrix = (
@@ -127,7 +127,7 @@ class PlanarSpace(Space):
             for x, position in enumerate(row)
         )
 
-    def get(self: PlanarSpace, index: tuple[int, int]) -> DiscretePosition:  # type: ignore[override]
+    def get(self: PlanarSpace, index: SpaceIndex) -> DiscretePosition:
         """Return the position at the given index."""
-        x, y = index
+        x, y = cast(tuple[int, int], index)
         return self.matrix[y][x]

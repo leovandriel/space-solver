@@ -7,14 +7,16 @@ import src.loops
 import src.sudoku
 import src.sudoku_mini
 
+SECOND = 2
+
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         if sys.argv[1] == "sudoku":
             src.sudoku.run(
-                Path(sys.argv[2]) if len(sys.argv) > 2 else None,  # noqa: PLR2004
+                Path(sys.argv[SECOND]) if len(sys.argv) > SECOND else None,
             )
         if sys.argv[1] == "sudoku_mini":
-            src.sudoku_mini.run(Path(sys.argv[2]))
+            src.sudoku_mini.run(Path(sys.argv[SECOND]))
         elif sys.argv[1] == "loops":
             src.loops.run()
         else:

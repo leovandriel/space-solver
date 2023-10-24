@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import sys
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
-from src.solver import solve
-from src.space import PlanarSpace
+from src.solver import solve_space
+from src.space import PlanarSpace, SpaceIndex
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -22,8 +22,8 @@ class Table(PlanarSpace):
                 if position != " ":
                     self.solve((x, y), int(position) - 1)
 
-    def propagate(self: Table, index: tuple[int, int]) -> bool:  # type: ignore[override]
-        x, y = index
+    def propagate(self: Table, index: SpaceIndex) -> bool:
+        x, y = cast(tuple[int, int], index)
         state = self.get((x, y)).state
         for xx in range(COUNT):
             if xx != x and not self.remove((xx, y), [state]):
@@ -51,5 +51,5 @@ def run(filename: Path) -> None:
     table = Table(count=COUNT, size=(COUNT, COUNT))
     with filename.open() as f:
         table.load(f.read())
-    solved = solve(table)
+    solved = solve_space(table)
     sys.stderr.write(f"{'SOLVED' if solved else 'UNSOLVED'}\n{table}\n")

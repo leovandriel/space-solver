@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import math
 import random
+from typing import cast
 
 from src.pygame import pygame
-from src.solver import solve
-from src.space import PlanarSpace
+from src.solver import solve_space
+from src.space import PlanarSpace, SpaceIndex
 from src.utils import await_key, flush_surface, setup_surface
 
 GRID_SIZE = 25
@@ -29,8 +30,8 @@ ANGLE_LOOKUP = [
 
 
 class Scene(PlanarSpace):
-    def propagate(self: Scene, index: tuple[int, int]) -> bool:  # type: ignore[override]
-        x, y = index
+    def propagate(self: Scene, index: SpaceIndex) -> bool:
+        x, y = cast(tuple[int, int], index)
         state = self.get((x, y)).state
         return (
             (
@@ -63,6 +64,7 @@ class Scene(PlanarSpace):
             )
         )
 
+    @property
     def is_valid(self: Scene) -> bool:
         for y in range(GRID_SIZE):
             for x in range(GRID_SIZE):
@@ -136,11 +138,11 @@ def run() -> None:
     random.seed(0)
     window, surface = setup_surface("Solve Loop", DRAW_SIZE, DRAW_SCALE)
     scene = Scene(count=STATE_COUNT, size=(GRID_SIZE, GRID_SIZE))
-    solved = solve(
+    solved = solve_space(
         scene,
-        lambda s: draw_wait(s, window, surface),  # type: ignore[arg-type]
+        lambda s: draw_wait(cast(Scene, s), window, surface),
     )
-    valid = scene.is_valid()
+    valid = scene.is_valid
     pygame.display.set_caption(
         ("SOLVED" if valid and solved else "UNSOLVED" if valid else "INVALID")
         + " (ESC to exit)",

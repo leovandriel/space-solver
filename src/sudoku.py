@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 import random
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from src.pygame import pygame
-from src.solver import solve
-from src.space import PlanarSpace
+from src.solver import solve_space
+from src.space import PlanarSpace, SpaceIndex
 from src.utils import await_key, flush_surface, setup_surface
 
 if TYPE_CHECKING:
@@ -29,8 +29,8 @@ class Table(PlanarSpace):
                 if position != " ":
                     self.solve((x, y), int(position) - 1)
 
-    def propagate(self: Table, index: tuple[int, int]) -> bool:  # type: ignore[override]
-        x, y = index
+    def propagate(self: Table, index: SpaceIndex) -> bool:
+        x, y = cast(tuple[int, int], index)
         state = self.get((x, y)).state
         for xx in range(COUNT):
             if xx != x and not self.remove((xx, y), [state]):
@@ -47,24 +47,35 @@ class Table(PlanarSpace):
                     return False
         return True
 
-    def is_valid(self: Table) -> bool:  # noqa: C901 PLR0912
-        correct = set(range(9))
+    def is_valid_cells(self: Table) -> bool:
         for y in range(COUNT):
             for x in range(COUNT):
                 if not self.get((x, y)).is_solved:
                     return False
+        return True
+
+    def is_valid_rows(self: Table) -> bool:
+        correct = set(range(9))
         for y in range(COUNT):
             row = set()
             for x in range(COUNT):
                 row.add(self.get((x, y)).state)
             if row != correct:
                 return False
+        return True
+
+    def is_valid_cols(self: Table) -> bool:
+        correct = set(range(9))
         for x in range(COUNT):
             col = set()
             for y in range(COUNT):
                 col.add(self.get((x, y)).state)
             if col != correct:
                 return False
+        return True
+
+    def is_valid_blocks(self: Table) -> bool:
+        correct = set(range(9))
         for x in range(COUNT // SUB):
             for y in range(COUNT // SUB):
                 block = set()
@@ -74,6 +85,15 @@ class Table(PlanarSpace):
                 if block != correct:
                     return False
         return True
+
+    @property
+    def is_valid(self: Table) -> bool:
+        return (
+            self.is_valid_cells()
+            and self.is_valid_rows()
+            and self.is_valid_cols()
+            and self.is_valid_blocks()
+        )
 
     def draw(
         self: Table,
@@ -108,11 +128,7 @@ class Table(PlanarSpace):
             for x in range(COUNT):
                 postion = self.get((x, y))
                 if postion.is_solved:
-                    text = large.render(
-                        str(postion),
-                        True,  # noqa: FBT003
-                        TEXT_COLOR,
-                    )
+                    text = large.render(str(postion), True, TEXT_COLOR)  # noqa: FBT003
                     surface.blit(
                         text,
                         (x * step[0] + step[0] / 3, y * step[1] + step[1] / 8),
@@ -151,11 +167,11 @@ def run(filename: Path | None) -> None:
     if filename is not None:
         with filename.open() as f:
             table.load(f.read())
-    solved = solve(
+    solved = solve_space(
         table,
-        lambda t: draw_wait(t, window, surface),  # type: ignore[arg-type]
+        lambda t: draw_wait(cast(Table, t), window, surface),
     )
-    valid = table.is_valid()
+    valid = table.is_valid
     pygame.display.set_caption(
         ("SOLVED" if valid and solved else "UNSOLVED" if valid else "INVALID")
         + " (ESC to exit)",
