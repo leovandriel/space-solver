@@ -18,6 +18,7 @@ DRAW_SCALE = 2
 FILL_COLOR = (255, 255, 255)
 STATE_COLOR = (128, 128, 128)
 LINE_COLOR = (0, 0, 0)
+EDGE_COLOR = (255, 128, 0)
 LINE_WIDTH = 4
 ANGLE_LOOKUP = [
     (0.5, -0.5, math.pi),
@@ -95,7 +96,13 @@ class Scene(PlanarSpace):
         for y in range(GRID_SIZE):
             for x in range(GRID_SIZE):
                 postion = self.get((x, y))
-                color = LINE_COLOR if postion.is_solved else STATE_COLOR
+                color = (
+                    LINE_COLOR
+                    if postion.is_solved
+                    else EDGE_COLOR
+                    if (x, y) in self.edge
+                    else STATE_COLOR
+                )
                 for state in postion.states:
                     xx, yy, angle = ANGLE_LOOKUP[state]
                     pygame.draw.arc(

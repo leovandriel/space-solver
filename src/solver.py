@@ -24,19 +24,37 @@ def propagate_queue(space: Space) -> bool:
     return True
 
 
-def min_count(space: Space) -> SpaceIndex:
-    """Return the index of the unsolved position with the lowest number of states."""
+def ensure_edge(space: Space) -> None:
+    """Ensure that at least one index is considered edge to start solving.
+
+    Space keeps track of an egde set which is used as candidates for unsolved
+    positions. In some cases, e.g. at the start, this set can be empty. To kick
+    off the solver, randomly select an egde element.
+    """
+    if not space.edge:
+        indices = [index for index, _ in space.positions]
+        space.edge.add(random.choice(indices))  # noqa: S311
+
+
+def select_position(space: Space) -> SpaceIndex:
+    """Return unsolved position with the lowest number of states.
+
+    This position is used to continue the solving process, by marking it as
+    solved and recursively solving from there, backtracking if a conflict
+    arises..
+    """
+    ensure_edge(space)
     minimum = None
     indices = []
-    for index, position in space.positions:
-        count = position.count
+    for index in space.edge:
+        count = space.get(index).count
         if (minimum is None or minimum >= count) and count > 1:
             if minimum == count:
                 indices.append(index)
             else:
                 minimum = count
                 indices = [index]
-    return random.choice(indices) if len(indices) > 0 else NOT_FOUND  # noqa: S311
+    return random.choice(indices) if indices else NOT_FOUND  # noqa: S311
 
 
 def solve_index(
@@ -76,5 +94,5 @@ def solve(space: Space, callback: Callback | None = None) -> bool:
         callback(space)
     if not propagate_queue(space):
         return False
-    index = min_count(space)
+    index = select_position(space)
     return index == NOT_FOUND or solve_index(space, index, callback)
