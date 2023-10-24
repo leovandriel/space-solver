@@ -24,7 +24,11 @@ def setup_surface(
 
 
 def flush_surface(window: pygame.Surface, surface: pygame.Surface) -> None:
-    window.blit(pygame.transform.smoothscale(surface, window.get_rect().size), (0, 0))
+    window_size = window.get_rect().size
+    if surface.get_rect().size[0] > window_size[0]:
+        window.blit(pygame.transform.smoothscale(surface, window_size), (0, 0))
+    else:
+        window.blit(pygame.transform.scale(surface, window_size), (0, 0))
     pygame.display.update()
 
 
