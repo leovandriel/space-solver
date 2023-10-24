@@ -1,4 +1,8 @@
-"""Solver for spaces."""
+"""Solver for spaces.
+
+The solver uses a combination of constraint propagation and random assignment
+with backgracking if constraint propagation fails.
+"""
 
 from __future__ import annotations
 
@@ -12,7 +16,7 @@ Callback = Callable[[Space], None]
 
 
 def propagate_queue(space: Space) -> bool:
-    """Propagate the solved state of a position into dependent positions."""
+    """Propagate all solved states listed in the queue into dependent positions."""
     while space.queue:
         index = space.queue.pop(0)
         if not space.propagate(index):
@@ -20,8 +24,8 @@ def propagate_queue(space: Space) -> bool:
     return True
 
 
-    """Return the index of the position with the lowest entropy."""
 def min_count(space: Space) -> SpaceIndex:
+    """Return the index of the unsolved position with the lowest number of states."""
     minimum = None
     indices = []
     for index, position in space.positions:
@@ -40,7 +44,15 @@ def solve_index(
     index: SpaceIndex,
     callback: Callback | None = None,
 ) -> bool:
-    """Set the position state at the given index to the given state."""
+    """Set the state for position at index and solve recursively.
+
+    After all propagations have completed there can still be unsolved positions.
+    To address this, we duplicate the space, assume a solution at this given
+    index, and try to solving from there. If we run into a conflict, we discard
+    the space.
+
+    Returns True if the space is solved, False otherwise.
+    """
     states = space.get(index).states
     for state in states:
         copy = space.copy()
@@ -52,7 +64,14 @@ def solve_index(
 
 
 def solve(space: Space, callback: Callback | None = None) -> bool:
-    """Solve all positions in the space into a valid state."""
+    """Solve all positions in the space recursively.
+
+    First propagate all solved positions listed in the queue. Then find the
+    unsolved position with minimal number of states and assign a random state to
+    recursively solve from.
+
+    Returns True if the space is solved, False otherwise.
+    """
     if callback is not None:
         callback(space)
     if not propagate_queue(space):
