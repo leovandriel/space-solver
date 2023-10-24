@@ -3,6 +3,7 @@
 import sys
 from pathlib import Path
 
+import src.automata
 import src.loops
 import src.sudoku
 import src.sudoku_mini
@@ -19,6 +20,8 @@ if __name__ == "__main__":
             src.sudoku_mini.run(Path(sys.argv[SECOND]))
         elif sys.argv[1] == "loops":
             src.loops.run()
+        elif sys.argv[1] == "automata":
+            src.automata.run()
         else:
             sys.stderr.write(f"Unknown script: {sys.argv[1]}\n")
     else:

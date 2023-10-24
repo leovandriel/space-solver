@@ -9,6 +9,7 @@ Spatial Solver
     python -m run loops
     python -m run sudoku_mini data/sudoku/expert.txt
     python -m run sudoku data/sudoku/expert.txt
+    python -m run automata
 
 ## License
 
