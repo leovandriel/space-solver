@@ -20,17 +20,17 @@ def propagate_queue(space: Space) -> bool:
     return True
 
 
-def min_entropy(space: Space) -> SpaceIndex:
     """Return the index of the position with the lowest entropy."""
+def min_count(space: Space) -> SpaceIndex:
     minimum = None
     indices = []
     for index, position in space.positions:
-        entropy = position.entropy
-        if (minimum is None or minimum >= entropy) and entropy > 1:
-            if minimum == entropy:
+        count = position.count
+        if (minimum is None or minimum >= count) and count > 1:
+            if minimum == count:
                 indices.append(index)
             else:
-                minimum = entropy
+                minimum = count
                 indices = [index]
     return random.choice(indices) if len(indices) > 0 else NOT_FOUND  # noqa: S311
 
@@ -57,5 +57,5 @@ def solve(space: Space, callback: Callback | None = None) -> bool:
         callback(space)
     if not propagate_queue(space):
         return False
-    index = min_entropy(space)
+    index = min_count(space)
     return index == NOT_FOUND or solve_index(space, index, callback)

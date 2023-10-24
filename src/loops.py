@@ -133,7 +133,7 @@ def run() -> None:
     scene = Scene(count=STATE_COUNT, size=(GRID_SIZE, GRID_SIZE))
     solved = solve(
         scene,
-        lambda t: draw_wait(t, window, surface),  # type: ignore[arg-type]
+        lambda s: draw_wait(s, window, surface),  # type: ignore[arg-type]
     )
     valid = scene.is_valid()
     pygame.display.set_caption(

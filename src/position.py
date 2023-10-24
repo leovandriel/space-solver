@@ -15,7 +15,7 @@ class Position(ABC):
 
     @property
     @abstractmethod
-    def entropy(self: Position) -> float:
+    def count(self: Position) -> float:
         """Number of states this position could be in."""
 
     @property
@@ -64,7 +64,7 @@ class DiscretePosition(Position):
         return DiscretePosition(vector=self.vector.copy())
 
     @property
-    def entropy(self: DiscretePosition) -> float:
+    def count(self: DiscretePosition) -> float:
         """Number of states this position could be in."""
         return self.vector.count(True)
 
