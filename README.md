@@ -1,6 +1,8 @@
 Spatial Solver
 ==============
 
+![Solve Sudoku](sudoku.png)
+
 ## Usage
 
     python -m run loops
