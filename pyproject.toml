@@ -1,0 +1,12 @@
+[tool.black]
+
+[tool.ruff]
+select = ["ALL"]
+extend-exclude = ["tests"]
+ignore = ["D203", "D213"]
+
+[tool.mypy]
+strict = true
+exclude = ["tests"]
+
+[tool.pytest.ini_options]
