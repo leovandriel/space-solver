@@ -29,6 +29,8 @@ def flush_surface(window: pygame.Surface, surface: pygame.Surface) -> None:
         window.blit(pygame.transform.smoothscale(surface, window_size), (0, 0))
     else:
         window.blit(pygame.transform.scale(surface, window_size), (0, 0))
+    if sys.argv[-1] == "record":
+        sys.stdout.buffer.write(window.get_view("0").raw)
     pygame.display.update()
 
 
