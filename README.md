@@ -1,4 +1,8 @@
+<img src="logo.jpg" width="25%" height="25%" align="right" alt="logo">
+
 # Spatial Solver
+
+Generic constraint solver based on state collapse.
 
 <img src="sudoku.png" width="50%" height="50%" alt="Solve Sudoku">
 
